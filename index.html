@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>75 DSA Questions from LeetCode — Interactive Study Guide</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+<style>
+  :root{
+    --bg:#0f1117; --bg2:#161a23; --card:#1b202b; --card2:#212736;
+    --ink:#e7ecf3; --muted:#9aa6b8; --line:#2b3242;
+    --brand:#6366f1; --brand2:#8b5cf6; --accent:#22d3ee; --ok:#34d399;
+    --warn:#fbbf24;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--ink);line-height:1.5}
+  a{color:inherit;text-decoration:none}
+  ::selection{background:var(--brand);color:#fff}
+
+  /* Layout */
+  .app{display:grid;grid-template-columns:288px minmax(0,1fr);min-height:100vh;width:100%}
+  /* Sidebar */
+  aside{grid-column:1;grid-row:1;position:sticky;top:0;height:100vh;overflow-y:auto;background:linear-gradient(180deg,#12151d,#0f1117);border-right:1px solid var(--line);padding:22px 16px}
+  .brand{display:flex;align-items:center;gap:10px;margin-bottom:6px}
+  .brand .logo{width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,var(--brand),var(--brand2));display:grid;place-items:center;font-weight:800;font-size:15px;color:#fff;box-shadow:0 6px 18px rgba(99,102,241,.4)}
+  .brand h1{font-size:14.5px;font-weight:800;letter-spacing:.2px}
+  .brand p{font-size:11px;color:var(--muted)}
+  .progress-wrap{margin:16px 0 8px}
+  .progress-bar{height:8px;border-radius:99px;background:#252b3a;overflow:hidden}
+  .progress-fill{height:100%;width:0;background:linear-gradient(90deg,var(--ok),var(--accent));transition:width .4s ease}
+  .progress-label{font-size:11px;color:var(--muted);margin-top:6px;display:flex;justify-content:space-between}
+  nav{margin-top:14px;display:flex;flex-direction:column;gap:2px}
+  nav a{display:flex;align-items:center;justify-content:space-between;padding:9px 12px;border-radius:9px;font-size:13.5px;font-weight:500;color:var(--muted);transition:.15s}
+  nav a:hover{background:var(--card);color:var(--ink)}
+  nav a.active{background:linear-gradient(135deg,rgba(99,102,241,.22),rgba(139,92,246,.18));color:#fff}
+  nav a .ico{display:flex;align-items:center;gap:9px}
+  nav a .count{font-size:11px;background:#2a3142;color:var(--muted);border-radius:99px;padding:1px 8px}
+  .reset{margin-top:14px;width:100%;padding:8px;border:1px solid var(--line);background:transparent;color:var(--muted);border-radius:9px;font-size:12px;cursor:pointer;transition:.15s}
+  .reset:hover{border-color:#3a4255;color:var(--ink);background:var(--card)}
+
+  /* Main */
+  main{grid-column:2;grid-row:1;min-width:0;width:100%;padding:0 0 60px}
+  .hero{position:relative;overflow:hidden;padding:48px 44px 40px;background:radial-gradient(1200px 400px at 20% -10%,rgba(99,102,241,.25),transparent),radial-gradient(900px 350px at 90% 0%,rgba(34,211,238,.15),transparent);border-bottom:1px solid var(--line)}
+  .hero h2{font-size:34px;font-weight:800;letter-spacing:-.5px;line-height:1.1}
+  .hero h2 .grad{background:linear-gradient(135deg,#a5b4fc,#67e8f9);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .hero p{margin-top:12px;color:var(--muted);max-width:620px;font-size:15px}
+  .stats{display:flex;gap:14px;margin-top:26px;flex-wrap:wrap}
+  .stat{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 18px;min-width:120px}
+  .stat b{display:block;font-size:24px;font-weight:800;background:linear-gradient(135deg,#c7d2fe,#67e8f9);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .stat span{font-size:12px;color:var(--muted)}
+
+  .toolbar{position:sticky;top:0;z-index:20;display:flex;gap:12px;align-items:center;padding:14px 44px;background:rgba(15,17,23,.85);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);flex-wrap:wrap}
+  .search{flex:1;min-width:220px;display:flex;align-items:center;gap:9px;background:var(--card);border:1px solid var(--line);border-radius:11px;padding:9px 14px}
+  .search input{flex:1;background:transparent;border:none;outline:none;color:var(--ink);font-size:14px}
+  .search svg{flex-shrink:0;color:var(--muted)}
+  .btn{padding:9px 14px;border-radius:11px;border:1px solid var(--line);background:var(--card);color:var(--ink);font-size:13px;font-weight:500;cursor:pointer;transition:.15s;white-space:nowrap}
+  .btn:hover{background:var(--card2);border-color:#3a4255}
+
+  .content{padding:30px 44px 0}
+  .cat{margin-bottom:40px;scroll-margin-top:90px}
+  .cat-head{display:flex;align-items:center;gap:13px;margin-bottom:18px}
+  .cat-emoji{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;font-size:22px;background:linear-gradient(135deg,var(--card2),var(--card));border:1px solid var(--line)}
+  .cat-head h3{font-size:22px;font-weight:800}
+  .cat-head .sub{font-size:12.5px;color:var(--muted)}
+
+  .qcard{background:var(--card);border:1px solid var(--line);border-radius:14px;margin-bottom:14px;overflow:hidden;transition:.2s}
+  .qcard:hover{border-color:#3a4255}
+  .qcard.solved{border-color:rgba(52,211,153,.4)}
+  .qhead{display:flex;align-items:center;gap:14px;padding:15px 18px;cursor:pointer;user-select:none}
+  .qnum{width:30px;height:30px;flex-shrink:0;border-radius:8px;background:linear-gradient(135deg,var(--brand),var(--brand2));display:grid;place-items:center;font-size:13px;font-weight:700;color:#fff}
+  .qtitle{flex:1;min-width:0}
+  .qtitle .t{font-size:15px;font-weight:600}
+  .qtitle .p{font-size:12.5px;color:var(--muted);margin-top:2px}
+  .lc{font-size:11px;font-weight:600;color:var(--accent);background:rgba(34,211,238,.1);border:1px solid rgba(34,211,238,.25);padding:2px 9px;border-radius:99px;white-space:nowrap}
+  .check{width:24px;height:24px;flex-shrink:0;border-radius:7px;border:2px solid var(--line);display:grid;place-items:center;cursor:pointer;transition:.15s}
+  .check:hover{border-color:var(--ok)}
+  .check.on{background:var(--ok);border-color:var(--ok)}
+  .check svg{opacity:0;color:#06281c;transition:.15s}
+  .check.on svg{opacity:1}
+  .chev{flex-shrink:0;color:var(--muted);transition:.25s}
+  .qcard.open .chev{transform:rotate(180deg)}
+  .qbody{max-height:0;overflow:hidden;transition:max-height .35s ease}
+  .qbody-inner{padding:0 18px 18px}
+  .note{font-size:12px;color:var(--warn);background:rgba(251,191,36,.08);border:1px solid rgba(251,191,36,.25);padding:7px 11px;border-radius:8px;margin-bottom:10px}
+  .codewrap{position:relative;border-radius:11px;overflow:hidden;border:1px solid #0c0e14;margin-top:8px}
+  .codewrap.codepanel{display:none}
+  .codewrap.codepanel.show{display:block}
+  .langtabs{display:flex;gap:6px;margin-top:4px;flex-wrap:wrap}
+  .langtab{padding:6px 12px;border-radius:8px;border:1px solid var(--line);background:var(--card2);color:var(--muted);font-size:12px;font-weight:600;cursor:pointer;transition:.15s}
+  .langtab:hover{color:var(--ink);border-color:#3a4255}
+  .langtab.active{background:linear-gradient(135deg,rgba(99,102,241,.25),rgba(139,92,246,.2));color:#fff;border-color:var(--brand)}
+  .globlang{display:flex;align-items:center;gap:6px}
+  .globlang label{font-size:12px;color:var(--muted);white-space:nowrap}
+  .globlang select{padding:8px 10px;border-radius:9px;border:1px solid var(--line);background:var(--card);color:var(--ink);font-size:13px;cursor:pointer}
+  .codebar{display:flex;align-items:center;justify-content:space-between;padding:7px 12px;background:#11141c;border-bottom:1px solid #0c0e14}
+  .codebar .lang{font-size:11px;color:var(--muted);font-family:'JetBrains Mono',monospace}
+  .copy{background:transparent;border:1px solid var(--line);color:var(--muted);font-size:11px;padding:4px 10px;border-radius:7px;cursor:pointer;transition:.15s;display:flex;align-items:center;gap:6px}
+  .copy:hover{color:var(--ink);border-color:#3a4255}
+  .copy.done{color:var(--ok);border-color:var(--ok)}
+  pre{margin:0!important;border-radius:0!important;max-height:520px}
+  pre code{font-family:'JetBrains Mono',monospace!important;font-size:12.7px!important;line-height:1.6!important}
+  .empty{text-align:center;color:var(--muted);padding:60px 0;font-size:15px}
+
+  footer{padding:30px 44px;color:var(--muted);font-size:12.5px;border-top:1px solid var(--line);margin-top:20px}
+
+  /* Mobile overlay — outside grid flow */
+  .backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:55}
+  .backdrop.show{display:block}
+
+  /* mobile */
+  .menu-btn{display:none}
+  @media(max-width:900px){
+    .app{grid-template-columns:1fr}
+    aside{grid-column:1;position:fixed;left:0;top:0;z-index:60;width:280px;transform:translateX(-100%);transition:.25s;box-shadow:0 0 40px rgba(0,0,0,.5)}
+    aside.show{transform:none}
+    main{grid-column:1}
+    .hero{padding:34px 20px 28px}.toolbar{padding:12px 16px}.content{padding:22px 16px 0}.hero h2{font-size:26px}
+    .menu-btn{display:grid;place-items:center;width:42px;height:42px;border-radius:11px;border:1px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer}
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <aside id="sidebar">
+    <div class="brand">
+      <div class="logo">75</div>
+      <div><h1>DSA Mastery</h1><p>LeetCode Study Guide</p></div>
+    </div>
+    <div class="progress-wrap">
+      <div class="progress-bar"><div class="progress-fill" id="pfill"></div></div>
+      <div class="progress-label"><span id="ptext">0 solved</span><span id="ppct">0%</span></div>
+    </div>
+    <nav id="nav"></nav>
+    <button class="reset" id="resetBtn">Reset progress</button>
+  </aside>
+
+  <main>
+    <div class="hero">
+      <h2>75 DSA Questions from <span class="grad">LeetCode</span></h2>
+      <p>An interactive study guide with simple, easy-to-understand solutions in <strong>C++</strong>, <strong>JavaScript</strong>, and <strong>Python</strong> — with search and progress tracking.</p>
+      <div class="stats">
+        <div class="stat"><b id="stTotal">0</b><span>Total Problems</span></div>
+        <div class="stat"><b id="stCats">6</b><span>Categories</span></div>
+        <div class="stat"><b id="stSolved">0</b><span>Solved by You</span></div>
+        <div class="stat"><b>3</b><span>Languages</span></div>
+      </div>
+    </div>
+
+    <div class="toolbar">
+      <button class="menu-btn" id="menuBtn" aria-label="Menu">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+      <div class="search">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input id="search" type="text" placeholder="Search by problem name or LeetCode number…" />
+      </div>
+      <button class="btn" id="expandAll">Expand all</button>
+      <button class="btn" id="collapseAll">Collapse all</button>
+      <div class="globlang">
+        <label for="globalLang">Default:</label>
+        <select id="globalLang">
+          <option value="cpp">C++</option>
+          <option value="js">JavaScript</option>
+          <option value="py">Python</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="content" id="content"></div>
+
+    <footer>
+      Built as an interactive learning resource &middot; Solutions in C++, JavaScript &amp; Python &middot; Tip: use language tabs on each problem, or set a default language above. Your progress is saved locally.
+    </footer>
+  </main>
+</div>
+<div class="backdrop" id="backdrop"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-clike.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-c.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-cpp.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+<script src="solutions-data.js"></script>
+<script>
+const LANGS = [
+  { id:'cpp', label:'C++', cls:'language-cpp', key:'codeCpp' },
+  { id:'js', label:'JavaScript', cls:'language-javascript', key:'codeJs' },
+  { id:'py', label:'Python', cls:'language-python', key:'codePy' }
+];
+let defaultLang = localStorage.getItem('dsa75_lang') || 'js';
+document.getElementById('globalLang').value = defaultLang;
+
+// ---------- Render ----------
+const content = document.getElementById('content');
+const navEl = document.getElementById('nav');
+let total = 0;
+DATA.forEach(c => total += c.questions.length);
+document.getElementById('stTotal').textContent = total;
+document.getElementById('stCats').textContent = DATA.length;
+
+const escapeHtml = s => s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+const keyOf = (cat,q) => `${cat}-${q.lc}-${q.n}`;
+let solved = JSON.parse(localStorage.getItem('dsa75_solved') || '{}');
+
+const checkSvg = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5"><polyline points="20 6 9 17 4 12"/></svg>';
+const chevSvg = '<svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>';
+
+function buildCodeBlock(q, activeLang) {
+  const lang = activeLang || defaultLang;
+  const tabs = LANGS.map(l =>
+    `<button type="button" class="langtab ${l.id === lang ? 'active' : ''}" data-lang="${l.id}">${l.label}</button>`
+  ).join('');
+  const panels = LANGS.map(l => `
+    <div class="codewrap codepanel ${l.id === lang ? 'show' : ''}" data-lang="${l.id}">
+      <div class="codebar"><span class="lang">${l.label}</span><button type="button" class="copy">${copyIcon()} Copy</button></div>
+      <pre><code class="${l.cls}">${escapeHtml(q[l.key] || '')}</code></pre>
+    </div>`).join('');
+  return `<div class="langtabs">${tabs}</div>${panels}`;
+}
+
+function switchLang(card, langId) {
+  card.dataset.lang = langId;
+  card.querySelectorAll('.langtab').forEach(t => t.classList.toggle('active', t.dataset.lang === langId));
+  card.querySelectorAll('.codepanel').forEach(p => p.classList.toggle('show', p.dataset.lang === langId));
+  card.querySelectorAll('code').forEach(c => Prism.highlightElement(c));
+  if (card.classList.contains('open')) {
+    const body = card.querySelector('.qbody');
+    body.style.maxHeight = body.scrollHeight + 'px';
+  }
+}
+
+function applyGlobalLang(langId) {
+  defaultLang = langId;
+  localStorage.setItem('dsa75_lang', langId);
+  document.querySelectorAll('.qcard').forEach(card => switchLang(card, langId));
+}
+
+DATA.forEach(cat => {
+  const a = document.createElement('a');
+  a.href = '#' + cat.id;
+  a.dataset.cat = cat.id;
+  a.innerHTML = `<span class="ico">${cat.emoji} ${cat.name}</span><span class="count">${cat.questions.length}</span>`;
+  navEl.appendChild(a);
+
+  const sec = document.createElement('section');
+  sec.className = 'cat';
+  sec.id = cat.id;
+  sec.innerHTML = `<div class="cat-head"><div class="cat-emoji">${cat.emoji}</div>
+    <div><h3>${cat.name}</h3><div class="sub">${cat.questions.length} questions &middot; tap a card to view solutions in C++, JavaScript, or Python</div></div></div>`;
+
+  cat.questions.forEach(q => {
+    const k = keyOf(cat.id, q);
+    const isOn = !!solved[k];
+    const card = document.createElement('div');
+    card.className = 'qcard' + (isOn ? ' solved' : '');
+    card.dataset.key = k;
+    card.dataset.lang = defaultLang;
+    card.dataset.search = (q.title + ' ' + q.lc + ' ' + cat.name).toLowerCase();
+    card.innerHTML = `
+      <div class="qhead">
+        <div class="qnum">${q.n}</div>
+        <div class="qtitle"><div class="t">${q.title}</div><div class="p">${escapeHtml(q.problem)}</div></div>
+        <span class="lc">LC ${q.lc}</span>
+        <div class="check ${isOn?'on':''}" title="Mark as solved">${checkSvg}</div>
+        ${chevSvg}
+      </div>
+      <div class="qbody"><div class="qbody-inner">
+        ${q.note ? `<div class="note">⚠️ ${escapeHtml(q.note)}</div>` : ''}
+        ${buildCodeBlock(q, defaultLang)}
+      </div></div>`;
+    sec.appendChild(card);
+  });
+  content.appendChild(sec);
+});
+
+function copyIcon(){return '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';}
+
+Prism.highlightAll();
+
+// ---------- Interactions ----------
+content.addEventListener('click', e => {
+  const tab = e.target.closest('.langtab');
+  if (tab) {
+    e.stopPropagation();
+    switchLang(tab.closest('.qcard'), tab.dataset.lang);
+    return;
+  }
+  const check = e.target.closest('.check');
+  if (check){ e.stopPropagation(); toggleSolved(check.closest('.qcard')); return; }
+  const copy = e.target.closest('.copy');
+  if (copy){ e.stopPropagation(); doCopy(copy); return; }
+  const head = e.target.closest('.qhead');
+  if (head){ toggleCard(head.closest('.qcard')); }
+});
+
+function toggleCard(card){
+  const body = card.querySelector('.qbody');
+  const open = card.classList.toggle('open');
+  body.style.maxHeight = open ? body.scrollHeight + 'px' : '0';
+}
+function doCopy(btn){
+  const code = btn.closest('.codepanel.show').querySelector('code').innerText;
+  navigator.clipboard.writeText(code).then(()=>{
+    btn.classList.add('done'); btn.innerHTML = '✓ Copied';
+    setTimeout(()=>{btn.classList.remove('done'); btn.innerHTML = copyIcon()+' Copy';},1500);
+  });
+}
+function toggleSolved(card){
+  const k = card.dataset.key;
+  if (solved[k]){ delete solved[k]; } else { solved[k] = 1; }
+  localStorage.setItem('dsa75_solved', JSON.stringify(solved));
+  card.classList.toggle('solved', !!solved[k]);
+  card.querySelector('.check').classList.toggle('on', !!solved[k]);
+  updateProgress();
+}
+function updateProgress(){
+  const n = Object.keys(solved).length;
+  const pct = Math.round(n/total*100);
+  document.getElementById('pfill').style.width = pct + '%';
+  document.getElementById('ptext').textContent = n + ' solved';
+  document.getElementById('ppct').textContent = pct + '%';
+  document.getElementById('stSolved').textContent = n;
+}
+updateProgress();
+
+document.getElementById('globalLang').addEventListener('change', e => applyGlobalLang(e.target.value));
+
+document.getElementById('resetBtn').addEventListener('click', ()=>{
+  if(!confirm('Reset all your solved progress?')) return;
+  solved = {}; localStorage.removeItem('dsa75_solved');
+  document.querySelectorAll('.qcard').forEach(c=>{c.classList.remove('solved');c.querySelector('.check').classList.remove('on');});
+  updateProgress();
+});
+
+// expand / collapse all
+document.getElementById('expandAll').addEventListener('click', ()=>{
+  document.querySelectorAll('.qcard').forEach(c=>{if(c.style.display!=='none'){c.classList.add('open');const b=c.querySelector('.qbody');b.style.maxHeight=b.scrollHeight+'px';}});
+});
+document.getElementById('collapseAll').addEventListener('click', ()=>{
+  document.querySelectorAll('.qcard').forEach(c=>{c.classList.remove('open');c.querySelector('.qbody').style.maxHeight='0';});
+});
+
+// search
+const search = document.getElementById('search');
+search.addEventListener('input', ()=>{
+  const term = search.value.trim().toLowerCase();
+  DATA.forEach(cat=>{
+    const sec = document.getElementById(cat.id);
+    let visible = 0;
+    sec.querySelectorAll('.qcard').forEach(card=>{
+      const match = !term || card.dataset.search.includes(term);
+      card.style.display = match ? '' : 'none';
+      if (match) visible++;
+    });
+    sec.style.display = visible ? '' : 'none';
+  });
+  let any = document.querySelectorAll('.qcard:not([style*="display: none"])').length;
+  let emptyEl = document.getElementById('emptyState');
+  if (!any){ if(!emptyEl){emptyEl=document.createElement('div');emptyEl.id='emptyState';emptyEl.className='empty';emptyEl.textContent='No problems match your search.';content.appendChild(emptyEl);} }
+  else if (emptyEl){ emptyEl.remove(); }
+});
+
+// scrollspy
+const navLinks = [...navEl.querySelectorAll('a')];
+const sections = DATA.map(c=>document.getElementById(c.id));
+const obs = new IntersectionObserver(entries=>{
+  entries.forEach(en=>{
+    if(en.isIntersecting){
+      navLinks.forEach(l=>l.classList.toggle('active', l.dataset.cat===en.target.id));
+    }
+  });
+}, {rootMargin:'-40% 0px -55% 0px'});
+sections.forEach(s=>obs.observe(s));
+
+// mobile menu
+const sidebar = document.getElementById('sidebar');
+const backdrop = document.getElementById('backdrop');
+document.getElementById('menuBtn').addEventListener('click', ()=>{sidebar.classList.add('show');backdrop.classList.add('show');});
+backdrop.addEventListener('click', ()=>{sidebar.classList.remove('show');backdrop.classList.remove('show');});
+navEl.addEventListener('click', ()=>{sidebar.classList.remove('show');backdrop.classList.remove('show');});
+</script>
+</body>
+</html>
